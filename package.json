@@ -1,0 +1,35 @@
+{
+  "name": "timesheet-utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craPkit/timesheet-utils"
+  },
+  "scripts": {
+    "build": "tsc",
+    "convert": "ts-node ./src/standalone.ts --file",
+    "start": "npm run convert --",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Nemenz <patrick.marlovics@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "csvtojson": "2.0.10",
+    "lodash": "4.17.21",
+    "minimist": "1.2.5"
+  },
+  "devDependencies": {
+    "@types/lodash": "4.14.168",
+    "@types/node": "14.14.37",
+    "prettier": "2.2.1",
+    "ts-node": "9.1.1",
+    "typescript": "4.2.3"
+  }
+}
