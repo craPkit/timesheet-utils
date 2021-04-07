@@ -1,12 +1,13 @@
 import { AprodaData, convertMonthFromCSV, ProjectMap } from './convert';
+import { csv } from './setup';
 
 const topInputSelector =
   '#arbeitstagUserBereich > table:nth-child(4) > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(1) input';
 
 let dataCache: AprodaData;
 
-export async function fillDay(projectMap: ProjectMap) {
-  const data = cachedData(projectMap);
+async function fillDay(projectMap: ProjectMap) {
+  const data = await cachedData(projectMap);
   const day = data[await getAprodaDay()];
   fillBeginn(day.startTime);
   fillPause(day.breakTime, day.breakTotal);
@@ -28,15 +29,15 @@ export async function fillDay(projectMap: ProjectMap) {
                */
 }
 
-export async function setupEntries(projectMap: ProjectMap) {
-  const data = cachedData(projectMap);
+async function setupEntries(projectMap: ProjectMap) {
+  const data = await cachedData(projectMap);
   const day = data[await getAprodaDay()];
   if (day.data.length > 1) {
     await addEntries(day.data.length - 1);
   }
 }
 
-export function markAllAsHomeOffice() {
+function markAllAsHomeOffice() {
   const selects = nodeListToArray(document.querySelectorAll('select')).filter((select) =>
     select.id.includes('inHouseSelect')
   );
@@ -53,11 +54,11 @@ export function markAllAsHomeOffice() {
   return;
 }
 
-function cachedData(projectMap: ProjectMap): AprodaData {
+async function cachedData(projectMap: ProjectMap): Promise<AprodaData> {
   if (dataCache) {
     return dataCache;
   }
-  const rawData = JSON.parse(prompt('Paste SwipeTimes-exported CSV:'));
+  const rawData = await csv.fromString(prompt('Paste SwipeTimes-exported CSV:'));
   const data = convertMonthFromCSV(projectMap, rawData);
   dataCache = data;
   return data;
