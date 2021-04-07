@@ -1,6 +1,6 @@
 {
   "name": "timesheet-utils",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -12,7 +12,7 @@
     "url": "https://github.com/craPkit/timesheet-utils"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "esbuild ./src/aproda.ts --bundle --outfile=./dist/aproda.js",
     "convert": "ts-node ./src/standalone.ts --file",
     "start": "npm run convert --",
     "prepare": "npm run build",
@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "csvtojson": "2.0.10",
+    "esbuild": "0.11.5",
     "lodash": "4.17.21",
     "minimist": "1.2.5"
   },
