@@ -254,8 +254,8 @@
   var require_Set = __commonJS((exports, module) => {
     var getNative = require_getNative();
     var root = require_root();
-    var Set = getNative(root, "Set");
-    module.exports = Set;
+    var Set2 = getNative(root, "Set");
+    module.exports = Set2;
   });
 
   // node_modules/lodash/_WeakMap.js
@@ -271,7 +271,7 @@
     var DataView = require_DataView();
     var Map2 = require_Map();
     var Promise2 = require_Promise();
-    var Set = require_Set();
+    var Set2 = require_Set();
     var WeakMap = require_WeakMap();
     var baseGetTag = require_baseGetTag();
     var toSource = require_toSource();
@@ -284,10 +284,10 @@
     var dataViewCtorString = toSource(DataView);
     var mapCtorString = toSource(Map2);
     var promiseCtorString = toSource(Promise2);
-    var setCtorString = toSource(Set);
+    var setCtorString = toSource(Set2);
     var weakMapCtorString = toSource(WeakMap);
     var getTag = baseGetTag;
-    if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set && getTag(new Set()) != setTag || WeakMap && getTag(new WeakMap()) != weakMapTag) {
+    if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set2 && getTag(new Set2()) != setTag || WeakMap && getTag(new WeakMap()) != weakMapTag) {
       getTag = function(value) {
         var result = baseGetTag(value), Ctor = result == objectTag ? value.constructor : void 0, ctorString = Ctor ? toSource(Ctor) : "";
         if (ctorString) {
@@ -7632,15 +7632,14 @@
           let time = null;
           let endTime2 = null;
           const sum = items.reduce((agg, it) => {
-            agg[note] = agg[note] ? it[note] ? `${agg[note]}; ${it[note]}` : agg[note] : it[note] || "";
             agg[duration] += parseFloat(it[duration]);
             time = !time || time > it[startTime] ? it[startTime] : time;
             endTime2 = it[_SwipeTimesProvider.keys.endTime];
             return agg;
           }, {
-            [duration]: 0,
-            [note]: ""
+            [duration]: 0
           });
+          sum[note] = [...new Set(items.map((it) => it[note]).filter(Boolean))].join(";");
           sum[duration] = roundDuration(sum[duration]);
           sum[startTime] = time;
           if (!dayStart || dayStart > time) {

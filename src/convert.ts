@@ -123,9 +123,8 @@ class SwipeTimesProvider {
           const note = SwipeTimesProvider.keys.note;
           let time = null;
           let endTime = null;
-          const sum = items.reduce(
+          const sum: Partial<AprodaProjectEntry> = items.reduce(
             (agg, it) => {
-              agg[note] = agg[note] ? (it[note] ? `${agg[note]}; ${it[note]}` : agg[note]) : it[note] || '';
               // @ts-ignore
               agg[duration] += parseFloat(it[duration]);
               time = !time || time > it[startTime] ? it[startTime] : time;
@@ -134,9 +133,9 @@ class SwipeTimesProvider {
             },
             {
               [duration]: 0,
-              [note]: '',
             }
           );
+          sum[note] = [...new Set(items.map(it => it[note]).filter(Boolean))].join(';');
           // @ts-ignore
           sum[duration] = roundDuration(sum[duration]);
           sum[startTime] = time;
