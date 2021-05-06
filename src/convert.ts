@@ -7,12 +7,12 @@ export interface ProjectMap {
   defaultProject: string;
   projectMap: {
     [key: string]: string;
-  },
+  };
   taskMap: {
     [project: string]: {
       [key: string]: string;
-    }
-  },
+    };
+  };
 }
 
 export interface SwipeTimesEntry {
@@ -58,8 +58,7 @@ class SwipeTimesProvider {
     startDate: 'Start date',
   };
 
-  constructor(private readonly config: ProjectMap, private readonly data: SwipeTimesEntry[]) {
-  }
+  constructor(private readonly config: ProjectMap, private readonly data: SwipeTimesEntry[]) {}
 
   get projectMap() {
     return this.config.projectMap || {};
@@ -99,8 +98,11 @@ class SwipeTimesProvider {
       let breakTotal = 0;
       let firstBreak = '';
       vals.forEach((it, idx) => {
+        if (!it[startTime]) {
+          return false;
+        }
         const ref = vals[idx + 1];
-        if (!ref) {
+        if (!ref || !ref[startTime]) {
           return false;
         }
         const diff = toTime(ref[startTime]) - toTime(it[endTime]);
@@ -127,7 +129,7 @@ class SwipeTimesProvider {
             (agg, it) => {
               // @ts-ignore
               agg[duration] += parseFloat(it[duration]);
-              time = !time || time > it[startTime] ? it[startTime] : time;
+              time = !time || time > it[startTime] ? it[startTime] ?? null : time;
               endTime = it[SwipeTimesProvider.keys.endTime];
               return agg;
             },
@@ -135,11 +137,11 @@ class SwipeTimesProvider {
               [duration]: 0,
             }
           );
-          sum[note] = [...new Set(items.map(it => it[note]).filter(Boolean))].join(';');
+          sum[note] = [...new Set(items.map((it) => it[note]).filter(Boolean))].join(';');
           // @ts-ignore
           sum[duration] = roundDuration(sum[duration]);
           sum[startTime] = time;
-          if (!dayStart || dayStart > time) {
+          if (time && (!dayStart || dayStart > time)) {
             dayStart = time;
           }
           return sum;

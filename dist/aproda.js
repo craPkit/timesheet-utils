@@ -7610,8 +7610,11 @@
         let breakTotal = 0;
         let firstBreak = "";
         vals.forEach((it, idx) => {
+          if (!it[startTime]) {
+            return false;
+          }
           const ref = vals[idx + 1];
-          if (!ref) {
+          if (!ref || !ref[startTime]) {
             return false;
           }
           const diff = toTime(ref[startTime]) - toTime(it[endTime]);
@@ -7633,7 +7636,7 @@
           let endTime2 = null;
           const sum = items.reduce((agg, it) => {
             agg[duration] += parseFloat(it[duration]);
-            time = !time || time > it[startTime] ? it[startTime] : time;
+            time = !time || time > it[startTime] ? it[startTime] ?? null : time;
             endTime2 = it[_SwipeTimesProvider.keys.endTime];
             return agg;
           }, {
@@ -7642,7 +7645,7 @@
           sum[note] = [...new Set(items.map((it) => it[note]).filter(Boolean))].join(";");
           sum[duration] = roundDuration(sum[duration]);
           sum[startTime] = time;
-          if (!dayStart || dayStart > time) {
+          if (time && (!dayStart || dayStart > time)) {
             dayStart = time;
           }
           return sum;
