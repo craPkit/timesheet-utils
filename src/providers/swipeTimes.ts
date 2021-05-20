@@ -5,6 +5,7 @@ import entries from 'lodash/entries';
 import { ProjectMap } from '../types/projectMap';
 import { roundDuration, toTime } from '../utils/time';
 import { AprodaData, AprodaProjectEntry } from '../types/aproda.types';
+import { BaseProvider } from './base';
 
 export interface SwipeTimesEntry {
   Project: string;
@@ -19,24 +20,6 @@ export interface SwipeTimesEntry {
   Duration: string;
   'Duration in hours': string;
   Tags: string;
-}
-
-export abstract class BaseProvider<T> {
-  constructor(private readonly config: ProjectMap, protected readonly data: T[]) {}
-
-  get projectMap() {
-    return this.config.projectMap || {};
-  }
-
-  get taskMap() {
-    return this.config.taskMap || {};
-  }
-
-  get defaultProject() {
-    return this.config.defaultProject || '';
-  }
-
-  public abstract sumProjectsPerDay(): AprodaData;
 }
 
 export class SwipeTimesProvider extends BaseProvider<SwipeTimesEntry> {
