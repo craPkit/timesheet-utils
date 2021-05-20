@@ -7587,7 +7587,7 @@
     return Math.round((duration + 1e-5) * 10) / 10;
   }
 
-  // src/providers/swipeTimes.ts
+  // src/providers/base.ts
   var BaseProvider = class {
     constructor(config, data) {
       this.config = config;
@@ -7603,6 +7603,8 @@
       return this.config.defaultProject || "";
     }
   };
+
+  // src/providers/swipeTimes.ts
   var _SwipeTimesProvider = class extends BaseProvider {
     sumProjectsPerDay() {
       return this.convertDays(groupEntriesByDay(this.data));
@@ -7610,7 +7612,7 @@
     groupDayByProjectTasks(day) {
       return (0, import_groupBy.default)(day, (obj) => {
         const project = this.projectMap[obj.Project] || this.defaultProject;
-        return `${project}~${this.taskMap[project][obj.Task] || 0}`;
+        return `${project}~${this.taskMap[project][obj.Task] || obj.Task || 0}`;
       });
     }
     convertDays(days) {
