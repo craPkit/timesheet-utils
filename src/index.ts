@@ -1,2 +1,2 @@
 export * from './convert';
-export * from './aproda';
+export * from './aproda.functions';

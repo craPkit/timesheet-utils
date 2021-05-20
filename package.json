@@ -12,8 +12,8 @@
     "url": "https://github.com/craPkit/timesheet-utils"
   },
   "scripts": {
-    "build": "esbuild ./src/aproda.ts --bundle --outfile=./dist/aproda.js",
-    "convert": "ts-node ./src/standalone.ts --file",
+    "build": "esbuild src/aproda.functions.ts --bundle --outfile=./dist/aproda.js",
+    "convert": "ts-node ./src/standalone.ts --projectMapPath 'data/project-map.json' --filePath",
     "start": "npm run convert --",
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
