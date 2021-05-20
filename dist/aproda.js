@@ -19,29 +19,6 @@
     return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", module && module.__esModule && "default" in module ? {get: () => module.default, enumerable: true} : {value: module, enumerable: true})), module);
   };
 
-  // node_modules/lodash/_arrayMap.js
-  var require_arrayMap = __commonJS((exports, module) => {
-    function arrayMap(array, iteratee) {
-      var index = -1, length = array == null ? 0 : array.length, result = Array(length);
-      while (++index < length) {
-        result[index] = iteratee(array[index], index, array);
-      }
-      return result;
-    }
-    module.exports = arrayMap;
-  });
-
-  // node_modules/lodash/_baseToPairs.js
-  var require_baseToPairs = __commonJS((exports, module) => {
-    var arrayMap = require_arrayMap();
-    function baseToPairs(object, props) {
-      return arrayMap(props, function(key) {
-        return [key, object[key]];
-      });
-    }
-    module.exports = baseToPairs;
-  });
-
   // node_modules/lodash/_freeGlobal.js
   var require_freeGlobal = __commonJS((exports, module) => {
     var freeGlobal = typeof global == "object" && global && global.Object === Object && global;
@@ -226,135 +203,73 @@
     module.exports = getNative;
   });
 
-  // node_modules/lodash/_DataView.js
-  var require_DataView = __commonJS((exports, module) => {
+  // node_modules/lodash/_defineProperty.js
+  var require_defineProperty = __commonJS((exports, module) => {
     var getNative = require_getNative();
-    var root = require_root();
-    var DataView = getNative(root, "DataView");
-    module.exports = DataView;
+    var defineProperty = function() {
+      try {
+        var func = getNative(Object, "defineProperty");
+        func({}, "", {});
+        return func;
+      } catch (e) {
+      }
+    }();
+    module.exports = defineProperty;
   });
 
-  // node_modules/lodash/_Map.js
-  var require_Map = __commonJS((exports, module) => {
-    var getNative = require_getNative();
-    var root = require_root();
-    var Map2 = getNative(root, "Map");
-    module.exports = Map2;
+  // node_modules/lodash/_baseAssignValue.js
+  var require_baseAssignValue = __commonJS((exports, module) => {
+    var defineProperty = require_defineProperty();
+    function baseAssignValue(object, key, value) {
+      if (key == "__proto__" && defineProperty) {
+        defineProperty(object, key, {
+          configurable: true,
+          enumerable: true,
+          value,
+          writable: true
+        });
+      } else {
+        object[key] = value;
+      }
+    }
+    module.exports = baseAssignValue;
   });
 
-  // node_modules/lodash/_Promise.js
-  var require_Promise = __commonJS((exports, module) => {
-    var getNative = require_getNative();
-    var root = require_root();
-    var Promise2 = getNative(root, "Promise");
-    module.exports = Promise2;
+  // node_modules/lodash/_arrayAggregator.js
+  var require_arrayAggregator = __commonJS((exports, module) => {
+    function arrayAggregator(array, setter, iteratee, accumulator) {
+      var index = -1, length = array == null ? 0 : array.length;
+      while (++index < length) {
+        var value = array[index];
+        setter(accumulator, value, iteratee(value), array);
+      }
+      return accumulator;
+    }
+    module.exports = arrayAggregator;
   });
 
-  // node_modules/lodash/_Set.js
-  var require_Set = __commonJS((exports, module) => {
-    var getNative = require_getNative();
-    var root = require_root();
-    var Set2 = getNative(root, "Set");
-    module.exports = Set2;
-  });
-
-  // node_modules/lodash/_WeakMap.js
-  var require_WeakMap = __commonJS((exports, module) => {
-    var getNative = require_getNative();
-    var root = require_root();
-    var WeakMap = getNative(root, "WeakMap");
-    module.exports = WeakMap;
-  });
-
-  // node_modules/lodash/_getTag.js
-  var require_getTag = __commonJS((exports, module) => {
-    var DataView = require_DataView();
-    var Map2 = require_Map();
-    var Promise2 = require_Promise();
-    var Set2 = require_Set();
-    var WeakMap = require_WeakMap();
-    var baseGetTag = require_baseGetTag();
-    var toSource = require_toSource();
-    var mapTag = "[object Map]";
-    var objectTag = "[object Object]";
-    var promiseTag = "[object Promise]";
-    var setTag = "[object Set]";
-    var weakMapTag = "[object WeakMap]";
-    var dataViewTag = "[object DataView]";
-    var dataViewCtorString = toSource(DataView);
-    var mapCtorString = toSource(Map2);
-    var promiseCtorString = toSource(Promise2);
-    var setCtorString = toSource(Set2);
-    var weakMapCtorString = toSource(WeakMap);
-    var getTag = baseGetTag;
-    if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set2 && getTag(new Set2()) != setTag || WeakMap && getTag(new WeakMap()) != weakMapTag) {
-      getTag = function(value) {
-        var result = baseGetTag(value), Ctor = result == objectTag ? value.constructor : void 0, ctorString = Ctor ? toSource(Ctor) : "";
-        if (ctorString) {
-          switch (ctorString) {
-            case dataViewCtorString:
-              return dataViewTag;
-            case mapCtorString:
-              return mapTag;
-            case promiseCtorString:
-              return promiseTag;
-            case setCtorString:
-              return setTag;
-            case weakMapCtorString:
-              return weakMapTag;
+  // node_modules/lodash/_createBaseFor.js
+  var require_createBaseFor = __commonJS((exports, module) => {
+    function createBaseFor(fromRight) {
+      return function(object, iteratee, keysFunc) {
+        var index = -1, iterable = Object(object), props = keysFunc(object), length = props.length;
+        while (length--) {
+          var key = props[fromRight ? length : ++index];
+          if (iteratee(iterable[key], key, iterable) === false) {
+            break;
           }
         }
-        return result;
+        return object;
       };
     }
-    module.exports = getTag;
+    module.exports = createBaseFor;
   });
 
-  // node_modules/lodash/_mapToArray.js
-  var require_mapToArray = __commonJS((exports, module) => {
-    function mapToArray(map) {
-      var index = -1, result = Array(map.size);
-      map.forEach(function(value, key) {
-        result[++index] = [key, value];
-      });
-      return result;
-    }
-    module.exports = mapToArray;
-  });
-
-  // node_modules/lodash/_setToPairs.js
-  var require_setToPairs = __commonJS((exports, module) => {
-    function setToPairs(set) {
-      var index = -1, result = Array(set.size);
-      set.forEach(function(value) {
-        result[++index] = [value, value];
-      });
-      return result;
-    }
-    module.exports = setToPairs;
-  });
-
-  // node_modules/lodash/_createToPairs.js
-  var require_createToPairs = __commonJS((exports, module) => {
-    var baseToPairs = require_baseToPairs();
-    var getTag = require_getTag();
-    var mapToArray = require_mapToArray();
-    var setToPairs = require_setToPairs();
-    var mapTag = "[object Map]";
-    var setTag = "[object Set]";
-    function createToPairs(keysFunc) {
-      return function(object) {
-        var tag = getTag(object);
-        if (tag == mapTag) {
-          return mapToArray(object);
-        }
-        if (tag == setTag) {
-          return setToPairs(object);
-        }
-        return baseToPairs(object, keysFunc(object));
-      };
-    }
-    module.exports = createToPairs;
+  // node_modules/lodash/_baseFor.js
+  var require_baseFor = __commonJS((exports, module) => {
+    var createBaseFor = require_createBaseFor();
+    var baseFor = createBaseFor();
+    module.exports = baseFor;
   });
 
   // node_modules/lodash/_baseTimes.js
@@ -620,88 +535,6 @@
     module.exports = keys;
   });
 
-  // node_modules/lodash/toPairs.js
-  var require_toPairs = __commonJS((exports, module) => {
-    var createToPairs = require_createToPairs();
-    var keys = require_keys();
-    var toPairs = createToPairs(keys);
-    module.exports = toPairs;
-  });
-
-  // node_modules/lodash/entries.js
-  var require_entries = __commonJS((exports, module) => {
-    module.exports = require_toPairs();
-  });
-
-  // node_modules/lodash/_defineProperty.js
-  var require_defineProperty = __commonJS((exports, module) => {
-    var getNative = require_getNative();
-    var defineProperty = function() {
-      try {
-        var func = getNative(Object, "defineProperty");
-        func({}, "", {});
-        return func;
-      } catch (e) {
-      }
-    }();
-    module.exports = defineProperty;
-  });
-
-  // node_modules/lodash/_baseAssignValue.js
-  var require_baseAssignValue = __commonJS((exports, module) => {
-    var defineProperty = require_defineProperty();
-    function baseAssignValue(object, key, value) {
-      if (key == "__proto__" && defineProperty) {
-        defineProperty(object, key, {
-          configurable: true,
-          enumerable: true,
-          value,
-          writable: true
-        });
-      } else {
-        object[key] = value;
-      }
-    }
-    module.exports = baseAssignValue;
-  });
-
-  // node_modules/lodash/_arrayAggregator.js
-  var require_arrayAggregator = __commonJS((exports, module) => {
-    function arrayAggregator(array, setter, iteratee, accumulator) {
-      var index = -1, length = array == null ? 0 : array.length;
-      while (++index < length) {
-        var value = array[index];
-        setter(accumulator, value, iteratee(value), array);
-      }
-      return accumulator;
-    }
-    module.exports = arrayAggregator;
-  });
-
-  // node_modules/lodash/_createBaseFor.js
-  var require_createBaseFor = __commonJS((exports, module) => {
-    function createBaseFor(fromRight) {
-      return function(object, iteratee, keysFunc) {
-        var index = -1, iterable = Object(object), props = keysFunc(object), length = props.length;
-        while (length--) {
-          var key = props[fromRight ? length : ++index];
-          if (iteratee(iterable[key], key, iterable) === false) {
-            break;
-          }
-        }
-        return object;
-      };
-    }
-    module.exports = createBaseFor;
-  });
-
-  // node_modules/lodash/_baseFor.js
-  var require_baseFor = __commonJS((exports, module) => {
-    var createBaseFor = require_createBaseFor();
-    var baseFor = createBaseFor();
-    module.exports = baseFor;
-  });
-
   // node_modules/lodash/_baseForOwn.js
   var require_baseForOwn = __commonJS((exports, module) => {
     var baseFor = require_baseFor();
@@ -901,6 +734,14 @@
       return this.__data__.has(key);
     }
     module.exports = stackHas;
+  });
+
+  // node_modules/lodash/_Map.js
+  var require_Map = __commonJS((exports, module) => {
+    var getNative = require_getNative();
+    var root = require_root();
+    var Map2 = getNative(root, "Map");
+    module.exports = Map2;
   });
 
   // node_modules/lodash/_nativeCreate.js
@@ -1255,6 +1096,18 @@
     module.exports = Uint8Array2;
   });
 
+  // node_modules/lodash/_mapToArray.js
+  var require_mapToArray = __commonJS((exports, module) => {
+    function mapToArray(map) {
+      var index = -1, result = Array(map.size);
+      map.forEach(function(value, key) {
+        result[++index] = [key, value];
+      });
+      return result;
+    }
+    module.exports = mapToArray;
+  });
+
   // node_modules/lodash/_setToArray.js
   var require_setToArray = __commonJS((exports, module) => {
     function setToArray(set) {
@@ -1465,6 +1318,82 @@
       return result;
     }
     module.exports = equalObjects;
+  });
+
+  // node_modules/lodash/_DataView.js
+  var require_DataView = __commonJS((exports, module) => {
+    var getNative = require_getNative();
+    var root = require_root();
+    var DataView = getNative(root, "DataView");
+    module.exports = DataView;
+  });
+
+  // node_modules/lodash/_Promise.js
+  var require_Promise = __commonJS((exports, module) => {
+    var getNative = require_getNative();
+    var root = require_root();
+    var Promise2 = getNative(root, "Promise");
+    module.exports = Promise2;
+  });
+
+  // node_modules/lodash/_Set.js
+  var require_Set = __commonJS((exports, module) => {
+    var getNative = require_getNative();
+    var root = require_root();
+    var Set2 = getNative(root, "Set");
+    module.exports = Set2;
+  });
+
+  // node_modules/lodash/_WeakMap.js
+  var require_WeakMap = __commonJS((exports, module) => {
+    var getNative = require_getNative();
+    var root = require_root();
+    var WeakMap = getNative(root, "WeakMap");
+    module.exports = WeakMap;
+  });
+
+  // node_modules/lodash/_getTag.js
+  var require_getTag = __commonJS((exports, module) => {
+    var DataView = require_DataView();
+    var Map2 = require_Map();
+    var Promise2 = require_Promise();
+    var Set2 = require_Set();
+    var WeakMap = require_WeakMap();
+    var baseGetTag = require_baseGetTag();
+    var toSource = require_toSource();
+    var mapTag = "[object Map]";
+    var objectTag = "[object Object]";
+    var promiseTag = "[object Promise]";
+    var setTag = "[object Set]";
+    var weakMapTag = "[object WeakMap]";
+    var dataViewTag = "[object DataView]";
+    var dataViewCtorString = toSource(DataView);
+    var mapCtorString = toSource(Map2);
+    var promiseCtorString = toSource(Promise2);
+    var setCtorString = toSource(Set2);
+    var weakMapCtorString = toSource(WeakMap);
+    var getTag = baseGetTag;
+    if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set2 && getTag(new Set2()) != setTag || WeakMap && getTag(new WeakMap()) != weakMapTag) {
+      getTag = function(value) {
+        var result = baseGetTag(value), Ctor = result == objectTag ? value.constructor : void 0, ctorString = Ctor ? toSource(Ctor) : "";
+        if (ctorString) {
+          switch (ctorString) {
+            case dataViewCtorString:
+              return dataViewTag;
+            case mapCtorString:
+              return mapTag;
+            case promiseCtorString:
+              return promiseTag;
+            case setCtorString:
+              return setTag;
+            case weakMapCtorString:
+              return weakMapTag;
+          }
+        }
+        return result;
+      };
+    }
+    module.exports = getTag;
   });
 
   // node_modules/lodash/_baseIsEqualDeep.js
@@ -1713,6 +1642,18 @@
       return result;
     });
     module.exports = stringToPath;
+  });
+
+  // node_modules/lodash/_arrayMap.js
+  var require_arrayMap = __commonJS((exports, module) => {
+    function arrayMap(array, iteratee) {
+      var index = -1, length = array == null ? 0 : array.length, result = Array(length);
+      while (++index < length) {
+        result[index] = iteratee(array[index], index, array);
+      }
+      return result;
+    }
+    module.exports = arrayMap;
   });
 
   // node_modules/lodash/_baseToString.js
@@ -2000,6 +1941,65 @@
       return object == null ? [] : baseValues(object, keys(object));
     }
     module.exports = values2;
+  });
+
+  // node_modules/lodash/_baseToPairs.js
+  var require_baseToPairs = __commonJS((exports, module) => {
+    var arrayMap = require_arrayMap();
+    function baseToPairs(object, props) {
+      return arrayMap(props, function(key) {
+        return [key, object[key]];
+      });
+    }
+    module.exports = baseToPairs;
+  });
+
+  // node_modules/lodash/_setToPairs.js
+  var require_setToPairs = __commonJS((exports, module) => {
+    function setToPairs(set) {
+      var index = -1, result = Array(set.size);
+      set.forEach(function(value) {
+        result[++index] = [value, value];
+      });
+      return result;
+    }
+    module.exports = setToPairs;
+  });
+
+  // node_modules/lodash/_createToPairs.js
+  var require_createToPairs = __commonJS((exports, module) => {
+    var baseToPairs = require_baseToPairs();
+    var getTag = require_getTag();
+    var mapToArray = require_mapToArray();
+    var setToPairs = require_setToPairs();
+    var mapTag = "[object Map]";
+    var setTag = "[object Set]";
+    function createToPairs(keysFunc) {
+      return function(object) {
+        var tag = getTag(object);
+        if (tag == mapTag) {
+          return mapToArray(object);
+        }
+        if (tag == setTag) {
+          return setToPairs(object);
+        }
+        return baseToPairs(object, keysFunc(object));
+      };
+    }
+    module.exports = createToPairs;
+  });
+
+  // node_modules/lodash/toPairs.js
+  var require_toPairs = __commonJS((exports, module) => {
+    var createToPairs = require_createToPairs();
+    var keys = require_keys();
+    var toPairs = createToPairs(keys);
+    module.exports = toPairs;
+  });
+
+  // node_modules/lodash/entries.js
+  var require_entries = __commonJS((exports, module) => {
+    module.exports = require_toPairs();
   });
 
   // node_modules/csvtojson/browser/browser.js
@@ -7573,12 +7573,22 @@
     }]);
   });
 
-  // src/convert.ts
-  var import_entries = __toModule(require_entries());
+  // src/providers/swipeTimes.ts
   var import_groupBy = __toModule(require_groupBy());
   var import_mapValues = __toModule(require_mapValues());
   var import_values = __toModule(require_values());
-  var _SwipeTimesProvider = class {
+  var import_entries = __toModule(require_entries());
+
+  // src/utils/time.ts
+  function toTime(timeVal) {
+    return new Date("1970/01/01 " + timeVal).getTime();
+  }
+  function roundDuration(duration) {
+    return Math.round((duration + 1e-5) * 10) / 10;
+  }
+
+  // src/providers/swipeTimes.ts
+  var BaseProvider = class {
     constructor(config, data) {
       this.config = config;
       this.data = data;
@@ -7592,52 +7602,36 @@
     get defaultProject() {
       return this.config.defaultProject || "";
     }
+  };
+  var _SwipeTimesProvider = class extends BaseProvider {
     sumProjectsPerDay() {
-      const startDateKey = _SwipeTimesProvider.keys.startDate;
-      const days = (0, import_groupBy.default)(this.data.map((it) => ({
-        ...it,
-        [startDateKey]: new Date(it[startDateKey]).toLocaleDateString("de-at", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric"
-        })
-      })), startDateKey);
+      return this.convertDays(groupEntriesByDay(this.data));
+    }
+    groupDayByProjectTasks(day) {
+      return (0, import_groupBy.default)(day, (obj) => {
+        const project = this.projectMap[obj.Project] || this.defaultProject;
+        return `${project}~${this.taskMap[project][obj.Task] || 0}`;
+      });
+    }
+    convertDays(days) {
       return (0, import_mapValues.default)(days, (day) => {
         let dayStart = null;
         const startTime = _SwipeTimesProvider.keys.startTime;
-        const endTime = _SwipeTimesProvider.keys.endTime;
         const vals = (0, import_values.default)(day).filter(Boolean).sort((a, b) => toTime(a[startTime]) - toTime(b[startTime]));
-        let breakTotal = 0;
-        let firstBreak = "";
-        vals.forEach((it, idx) => {
-          if (!it[startTime]) {
-            return false;
-          }
-          const ref = vals[idx + 1];
-          if (!ref || !ref[startTime]) {
-            return false;
-          }
-          const diff = toTime(ref[startTime]) - toTime(it[endTime]);
-          breakTotal += diff;
-          if (!firstBreak && diff > 20 * 60 * 1e3) {
-            firstBreak = it[endTime];
-          }
-        });
-        const convertedDay = (0, import_mapValues.default)((0, import_groupBy.default)(day, (obj) => {
-          const project = this.projectMap[obj.Project] || this.defaultProject;
-          return `${project}~${this.taskMap[project][obj.Task] || 0}`;
-        }), (items) => {
+        const [breakStart, breakTotal] = computeBreak(vals);
+        const convertedDay = (0, import_mapValues.default)(this.groupDayByProjectTasks(day), (items) => {
           if (!items) {
             return null;
           }
           const duration = _SwipeTimesProvider.keys.duration;
           const note = _SwipeTimesProvider.keys.note;
           let time = null;
-          let endTime2 = null;
           const sum = items.reduce((agg, it) => {
             agg[duration] += parseFloat(it[duration]);
+            if (!it[startTime] || it[startTime] === "00:00:00") {
+              return agg;
+            }
             time = !time || time > it[startTime] ? it[startTime] ?? null : time;
-            endTime2 = it[_SwipeTimesProvider.keys.endTime];
             return agg;
           }, {
             [duration]: 0
@@ -7651,18 +7645,8 @@
           return sum;
         });
         return {
-          data: (0, import_entries.default)(convertedDay).map((args) => {
-            const [key, val] = args;
-            const [project, task] = key.split("~");
-            return {
-              project,
-              task,
-              duration: val[_SwipeTimesProvider.keys.duration],
-              note: val[_SwipeTimesProvider.keys.note],
-              startTime: val[_SwipeTimesProvider.keys.startTime]
-            };
-          }),
-          breakTime: firstBreak && firstBreak.slice(0, 5) || "",
+          data: (0, import_entries.default)(convertedDay).map(([key, val]) => recordEntryToAprodaEntry(key, val)),
+          breakTime: breakStart && breakStart.slice(0, 5) || "",
           startTime: dayStart.slice(0, 5),
           breakTotal: `${Math.round(breakTotal / (1e3 * 60))}`
         };
@@ -7677,15 +7661,53 @@
     note: "Note",
     startDate: "Start date"
   };
+  function groupEntriesByDay(data) {
+    const startDateKey = SwipeTimesProvider.keys.startDate;
+    return (0, import_groupBy.default)(data.map((it) => ({
+      ...it,
+      [startDateKey]: new Date(it[startDateKey]).toLocaleDateString("de-at", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      })
+    })), startDateKey);
+  }
+  function computeBreak(vals) {
+    const startTime = SwipeTimesProvider.keys.startTime;
+    const endTime = SwipeTimesProvider.keys.endTime;
+    let breakTotal = 0;
+    let firstBreak = "";
+    vals.forEach((it, idx) => {
+      if (!it[startTime] || it[startTime] === "00:00:00") {
+        return;
+      }
+      const ref = vals[idx + 1];
+      if (!ref || !ref[startTime]) {
+        return;
+      }
+      const diff = toTime(ref[startTime]) - toTime(it[endTime]);
+      breakTotal += diff;
+      if (!firstBreak && diff > 20 * 60 * 1e3) {
+        firstBreak = it[endTime];
+      }
+    });
+    return [firstBreak, breakTotal];
+  }
+  function recordEntryToAprodaEntry(key, val) {
+    const [project, task] = key.split("~");
+    return {
+      project,
+      task,
+      duration: val[SwipeTimesProvider.keys.duration],
+      note: val[SwipeTimesProvider.keys.note],
+      startTime: val[SwipeTimesProvider.keys.startTime]
+    };
+  }
+
+  // src/convert.ts
   function convertMonthFromCSV(config, data) {
     const provider = new SwipeTimesProvider(config, data);
     return provider.sumProjectsPerDay();
-  }
-  function toTime(timeVal) {
-    return new Date("1970/01/01 " + timeVal).getTime();
-  }
-  function roundDuration(duration) {
-    return Math.round((duration + 1e-5) * 10) / 10;
   }
 
   // src/setup.ts
@@ -7697,7 +7719,7 @@
     escape: "\\"
   });
 
-  // src/aproda.ts
+  // src/aproda.functions.ts
   var topInputSelector = "#arbeitstagUserBereich > table:nth-child(4) > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(1) input";
   var dataCache;
   async function fillDay(projectMap) {
