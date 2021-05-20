@@ -40,7 +40,7 @@ export class SwipeTimesProvider extends BaseProvider<SwipeTimesEntry> {
   private groupDayByProjectTasks(day) {
     return groupBy(day, (obj) => {
       const project = this.projectMap[obj.Project] || this.defaultProject;
-      return `${project}~${this.taskMap[project][obj.Task] || 0}`;
+      return `${project}~${this.taskMap[project][obj.Task] || obj.Task || 0}`;
     })
   }
 
