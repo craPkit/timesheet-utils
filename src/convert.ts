@@ -2,6 +2,7 @@ import entries from 'lodash/entries';
 import groupBy from 'lodash/groupBy';
 import mapValues from 'lodash/mapValues';
 import values from 'lodash/values';
+import { AprodaData, AprodaProjectEntry } from './aproda';
 
 export interface ProjectMap {
   defaultProject: string;
@@ -28,23 +29,6 @@ export interface SwipeTimesEntry {
   Duration: string;
   'Duration in hours': string;
   Tags: string;
-}
-
-export interface AprodaProjectEntry {
-  project: string;
-  task: string;
-  duration: string | number;
-  note: string | number;
-  startTime: string | number;
-}
-
-export interface AprodaData {
-  [day: string]: {
-    data: AprodaProjectEntry[];
-    breakTime: string;
-    startTime: string;
-    breakTotal: string;
-  };
 }
 
 class SwipeTimesProvider {
