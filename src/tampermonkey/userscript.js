@@ -23,5 +23,11 @@
     if (e.ctrlKey && e.key === 'h') {
       return __User__AprodaUtils.markAllAsHomeOffice();
     }
+    if (e.ctrlKey && e.key === 'z') {
+      return __User__AprodaUtils.zeitausgleich();
+    }
+    if (e.ctrlKey && e.key === 'u') {
+      return __User__AprodaUtils.urlaub();
+    }
   });
 })();

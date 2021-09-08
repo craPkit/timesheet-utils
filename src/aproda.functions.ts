@@ -1,7 +1,7 @@
 import { convertMonthFromCSV } from './convert';
 import { csv } from './setup';
 import { ProjectMap } from './types/projectMap';
-import { AprodaData } from './types/aproda.types';
+import { AprodaData, AprodaProjectEntry } from './types/aproda.types';
 
 const topInputSelector =
   '#arbeitstagUserBereich > table:nth-child(4) > tbody > tr > td:nth-child(1) > table > tbody > tr:nth-child(1) input';
@@ -56,6 +56,30 @@ function markAllAsHomeOffice() {
   return;
 }
 
+async function zeitausgleich() {
+  fillBeginn('09:00');
+  fillPause('', 1);
+  await setProject({
+    duration: 0,
+    project: 'adesso AT/Zeitausgleich',
+    task: 'Zeitausgleich',
+    startTime: '09:00',
+    note: ''
+  }, 0)
+}
+
+async function urlaub() {
+  fillBeginn('09:00');
+  fillPause('12:00', 30);
+  await setProject({
+    duration: 7.7,
+    project: 'adesso AT/Abwesenheit',
+    task: 'Urlaub',
+    startTime: '09:00',
+    note: ''
+  }, 0)
+}
+
 async function cachedData(projectMap: ProjectMap): Promise<AprodaData> {
   if (dataCache) {
     return dataCache;
@@ -73,11 +97,11 @@ function getAprodaDay(): string {
   return node.textContent;
 }
 
-async function sleep(ms) {
+async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms || 0));
 }
 
-async function addEntries(count) {
+async function addEntries(count: number) {
   const select = nodeListToArray(document.querySelectorAll('select')).filter((it) =>
     it.name.includes('selectNewTnCount')
   )[0];
@@ -96,19 +120,19 @@ async function addEntry() {
   return sleep(100);
 }
 
-function fillBeginn(startTime) {
+function fillBeginn(startTime: string) {
   const field = document.querySelectorAll(topInputSelector)[0] as HTMLInputElement;
   field.value = startTime;
 }
 
-function fillPause(time, duration) {
+function fillPause(time: string, duration: string | number) {
   const field = document.querySelectorAll(topInputSelector)[1] as HTMLInputElement;
   field.value = time;
   const input = nodeListToArray(document.querySelectorAll('input')).filter((it) => it.id.includes('pauseLaenge'))[0];
-  input.value = duration;
+  input.value = `${duration}`;
 }
 
-async function setProject(item, idx) {
+async function setProject(item: AprodaProjectEntry, idx: number) {
   const select = nodeListToArray(document.querySelectorAll('select')).filter((it) => it.id.includes('proSelect'))[idx];
   select.options.selectedIndex = nodeListToArray(select.options).findIndex((opt) => opt.text === item.project);
   select.dispatchEvent(new Event('change'));
@@ -152,4 +176,6 @@ window.__User__AprodaUtils = {
   fillDay,
   setupEntries,
   markAllAsHomeOffice,
+  zeitausgleich,
+  urlaub
 };
