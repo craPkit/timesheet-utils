@@ -7752,6 +7752,28 @@
     });
     return;
   }
+  async function zeitausgleich() {
+    fillBeginn("09:00");
+    fillPause("", 1);
+    await setProject({
+      duration: 0,
+      project: "adesso AT/Zeitausgleich",
+      task: "Zeitausgleich",
+      startTime: "09:00",
+      note: ""
+    }, 0);
+  }
+  async function urlaub() {
+    fillBeginn("09:00");
+    fillPause("12:00", 30);
+    await setProject({
+      duration: 7.7,
+      project: "adesso AT/Abwesenheit",
+      task: "Urlaub",
+      startTime: "09:00",
+      note: ""
+    }, 0);
+  }
   async function cachedData(projectMap) {
     if (dataCache) {
       return dataCache;
@@ -7788,7 +7810,7 @@
     const field = document.querySelectorAll(topInputSelector)[1];
     field.value = time;
     const input = nodeListToArray(document.querySelectorAll("input")).filter((it) => it.id.includes("pauseLaenge"))[0];
-    input.value = duration;
+    input.value = `${duration}`;
   }
   async function setProject(item, idx) {
     const select = nodeListToArray(document.querySelectorAll("select")).filter((it) => it.id.includes("proSelect"))[idx];
@@ -7822,6 +7844,8 @@
   window.__User__AprodaUtils = {
     fillDay,
     setupEntries,
-    markAllAsHomeOffice
+    markAllAsHomeOffice,
+    zeitausgleich,
+    urlaub
   };
 })();
