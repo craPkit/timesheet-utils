@@ -58,7 +58,7 @@ function markAllAsHomeOffice() {
 
 async function zeitausgleich() {
   fillBeginn('09:00');
-  fillPause('', 1);
+  fillPause('09:00', 1);
   await setProject({
     duration: 0,
     project: 'adesso AT/Zeitausgleich',
